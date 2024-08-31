@@ -2,7 +2,22 @@
 
 
 {% block content %}
-<h1>Home</h1>
-<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius ipsum ut at doloremque corporis quos, error commodi labore alias 
-minus accusamus dignissimos odio natus ducimus molestiae tempora minima illo ea.</p>
+<main class="container">
+    <section class="card card-body py-5">
+        <h1 class="display-1 text-center">Buenas Django</h1>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius ipsum ut at doloremque corporis quos, error commodi labore alias 
+        minus accusamus dignissimos odio natus ducimus molestiae tempora minima illo ea.</p>
+
+        <div class="text-center">
+            <a class="btn btn-secondary" href="/signin/">
+                Signin
+            </a>
+            <a class="btn btn-dark" href="/signup/">
+                Signup
+            </a>
+        </div>
+
+
+    </section>
+</main>
 {% endblock %}
