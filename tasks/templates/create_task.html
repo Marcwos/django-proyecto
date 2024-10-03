@@ -1,23 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
 <main class="container">
     <div class="row">
         <div class="col-md-4 offset-md-4">
             <form action="/tasks/create/" method="POST" class="card card-body">
                 <h1>Create Task</h1>
 
-                {{error}}
+                {{ error }}
     
                 {% csrf_token %}
 
-                {{form}}
+                {{ form.as_p }}
 
-                <button class="btn btn-primary">
+                <!-- Selección del tipo de tarea -->
+                <div class="form-group">
+                    <label for="task_type">Tipo de tarea</label>
+                    <select class="form-control" name="task_type" id="task_type">
+                        <option value="normal">Normal</option>
+                        <option value="urgent">Urgente</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary mt-3">
                     Save
                 </button>
-
             </form>
         </div>
     </div>

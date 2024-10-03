@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 
 
+
 def home(request):
     return render(request, "home.html")
 
@@ -45,24 +46,32 @@ def tasks_completed(request):
     tasks = Task.objects.filter(user=request.user, datecompleted__isnull=False).order_by('-datecompleted')
     return render(request, 'tasks.html', {'tasks': tasks})
 
-@login_required 
+@login_required
 def create_task(request):
     if request.method == 'GET':
-        return render(request,"create_task.html",{
-            'form': TaskForm
+        # Cargar tanto el formulario de tipo de tarea como el formulario principal al mismo tiempo
+        return render(request, "create_task.html", {
+            'form': TaskForm,
+            'task_types': ['normal', 'urgent']  # Lista de tipos de tarea
         })
     else:
         try:
             form = TaskForm(request.POST)
             new_task = form.save(commit=False)
             new_task.user = request.user
+
+            # Recibe el valor de 'task_type' desde el formulario
+            new_task.task_type = request.POST.get('task_type', 'normal')
+
             new_task.save()
             return redirect('tasks')
         except ValueError:
-            return render(request,"create_task.html",{
+            return render(request, "create_task.html", {
                 'form': TaskForm,
-                'error': 'Please provide valida data'
+                'task_types': ['normal', 'urgent'],  # Asegúrate de pasar la lista de tipos de tarea en caso de error
+                'error': 'Please provide valid data'
             })
+
 
 @login_required 
 def task_detail(request, task_id):
