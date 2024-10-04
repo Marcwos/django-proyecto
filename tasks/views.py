@@ -8,7 +8,7 @@ from .models import Task
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from .decorators import UrgentTaskDecorator, ImportantTaskDecorator, NormalTaskDecorator
-
+from .commands import CreateTaskCommand, UpdateTaskCommand, DeleteTaskCommand
 
 def home(request):
     return render(request, "home.html")
@@ -59,26 +59,27 @@ def tasks_completed(request):
 @login_required
 def create_task(request):
     if request.method == 'GET':
-        # Cargar tanto el formulario de tipo de tarea como el formulario principal al mismo tiempo
         return render(request, "create_task.html", {
             'form': TaskForm,
-            'task_types': ['normal', 'urgent']  # Lista de tipos de tarea
+            'task_types': ['normal', 'urgent']
         })
     else:
         try:
             form = TaskForm(request.POST)
-            new_task = form.save(commit=False)
-            new_task.user = request.user
-
-            # Recibe el valor de 'task_type' desde el formulario
-            new_task.task_type = request.POST.get('task_type', 'normal')
-
-            new_task.save()
-            return redirect('tasks')
+            if form.is_valid():
+                command = CreateTaskCommand(
+                    user=request.user,
+                    title=form.cleaned_data['title'],
+                    description=form.cleaned_data['description'],
+                    task_type=request.POST.get('task_type', 'normal'),
+                    important=form.cleaned_data.get('important', False)
+                )
+                command.execute()
+                return redirect('tasks')
         except ValueError:
             return render(request, "create_task.html", {
                 'form': TaskForm,
-                'task_types': ['normal', 'urgent'],  # Asegúrate de pasar la lista de tipos de tarea en caso de error
+                'task_types': ['normal', 'urgent'],
                 'error': 'Please provide valid data'
             })
 
@@ -99,19 +100,21 @@ def task_detail(request, task_id):
             return render(request, 'task_detail.html', {'task':task, 'form': form, 
                                                         'error': "Error updating task"})
 
-@login_required 
+@login_required
 def complete_task(request, task_id):
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     if request.method == 'POST':
-        task.datecompleted = timezone.now()
-        task.save()
+        command = UpdateTaskCommand(task, datecompleted=timezone.now())
+        command.execute()
         return redirect('tasks')
 
-@login_required 
+@login_required
 def delete_task(request, task_id):
     task = get_object_or_404(Task, pk=task_id, user=request.user)
     if request.method == 'POST':
-        task.delete()
+        # Usamos el comando para eliminar la tarea
+        command = DeleteTaskCommand(task)
+        command.execute()
         return redirect('tasks')
 
 @login_required 
