@@ -6,12 +6,11 @@ class TaskCommand:
         raise NotImplementedError("Debes implementar el método 'execute' en las clases hijas.")
 
 class CreateTaskCommand(TaskCommand):
-    def __init__(self, user, title, description, task_type, important=False):
+    def __init__(self, user, title, description, task_type):
         self.user = user
         self.title = title
         self.description = description
         self.task_type = task_type
-        self.important = important
 
 
     def execute(self):
@@ -19,8 +18,7 @@ class CreateTaskCommand(TaskCommand):
             user=self.user,
             title=self.title,
             description=self.description,
-            task_type=self.task_type,
-            important=self.important
+            task_type=self.task_type
         )
         return task
 

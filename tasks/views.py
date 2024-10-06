@@ -7,7 +7,7 @@ from .forms import TaskForm
 from .models import Task
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from .decorators import UrgentTaskDecorator, ImportantTaskDecorator, NormalTaskDecorator
+from .decorators import UniversidadTaskDecorator, LaboralTaskDecorator, PersonalTaskDecorator
 from .commands import CreateTaskCommand, UpdateTaskCommand, DeleteTaskCommand
 
 def home(request):
@@ -39,17 +39,18 @@ def signup(request):
 @login_required
 def tasks(request):
     tasks = Task.objects.filter(user=request.user, datecompleted__isnull=True)
-    
+
     decorated_tasks = []
     for task in tasks:
-        if task.task_type == 'urgent':
-            decorated_tasks.append(UrgentTaskDecorator(task))
-        elif task.important:
-            decorated_tasks.append(ImportantTaskDecorator(task))
-        else:
-            decorated_tasks.append(NormalTaskDecorator(task))
-    
+        if task.task_type == 'university':
+            decorated_tasks.append(UniversidadTaskDecorator(task))  # Ajusta según tu lógica
+        elif task.task_type == 'personal':
+            decorated_tasks.append(PersonalTaskDecorator(task))  # Ajusta según tu lógica
+        elif task.task_type == 'work':
+            decorated_tasks.append(LaboralTaskDecorator(task))  # Ajusta según tu lógica
+
     return render(request, 'tasks.html', {'tasks': decorated_tasks})
+
 
 @login_required 
 def tasks_completed(request):
@@ -61,7 +62,7 @@ def create_task(request):
     if request.method == 'GET':
         return render(request, "create_task.html", {
             'form': TaskForm,
-            'task_types': ['normal', 'urgent']
+            'task_types': ['university', 'personal', 'work']  # Incluye los nuevos tipos aquí
         })
     else:
         try:
@@ -71,15 +72,14 @@ def create_task(request):
                     user=request.user,
                     title=form.cleaned_data['title'],
                     description=form.cleaned_data['description'],
-                    task_type=request.POST.get('task_type', 'normal'),
-                    important=form.cleaned_data.get('important', False)
+                    task_type=form.cleaned_data['task_type']  # Usa el valor del formulario
                 )
                 command.execute()
                 return redirect('tasks')
         except ValueError:
             return render(request, "create_task.html", {
                 'form': TaskForm,
-                'task_types': ['normal', 'urgent'],
+                'task_types': ['university', 'personal', 'work'],  # Incluye los nuevos tipos aquí
                 'error': 'Please provide valid data'
             })
 

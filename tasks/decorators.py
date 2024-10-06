@@ -9,16 +9,16 @@ class TaskDecorator:
         return self.task.title
 
 # Decorador para tareas urgentes
-class UrgentTaskDecorator(TaskDecorator):
+class UniversidadTaskDecorator(TaskDecorator):
     def display_title(self):
-        return f"🔥 [URGENT] {self.task.title}"
+        return f"📓 [Uni] {self.task.title}"
 
 # Decorador para tareas importantes
-class ImportantTaskDecorator(TaskDecorator):
+class LaboralTaskDecorator(TaskDecorator):
     def display_title(self):
-        return f"✔️ [IMPORTANT] {self.task.title}"
+        return f"💸 [Laboral] {self.task.title}"
 
 # Decorador para tareas normales
-class NormalTaskDecorator(TaskDecorator):
+class PersonalTaskDecorator(TaskDecorator):
     def display_title(self):
-        return self.task.title
+        return f"🙋 [Personal] {self.task.title}"
