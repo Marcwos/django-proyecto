@@ -13,7 +13,7 @@ class Task(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     datecompleted = models.DateTimeField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    task_type = models.CharField(max_length=10, choices=TASK_TYPE_CHOICES, default='normal')
+    task_type = models.CharField(max_length=10, choices=TASK_TYPE_CHOICES, default='personal')
 
     def __str__(self):
         return self.title

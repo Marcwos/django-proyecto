@@ -1,26 +1,26 @@
 ## este las clases que implementas el diseno de patron de comportamiento COMAND
 from .models import Task
+from .task_builder import TaskBuilder
 
-class TaskCommand:
-    def execute(self):
-        raise NotImplementedError("Debes implementar el método 'execute' en las clases hijas.")
-
-class CreateTaskCommand(TaskCommand):
-    def __init__(self, user, title, description, task_type):
+class CreateTaskCommand:
+    def __init__(self, user, title, description, task_type, is_important=False, is_soft=False):
         self.user = user
         self.title = title
         self.description = description
         self.task_type = task_type
-
+        self.is_important = is_important
+        self.is_soft = is_soft
 
     def execute(self):
-        task = Task.objects.create(
-            user=self.user,
-            title=self.title,
-            description=self.description,
-            task_type=self.task_type
-        )
-        return task
+        # Usa el Builder para construir la tarea
+        builder = TaskBuilder()
+        task = (builder.set_task_type(self.task_type)
+                       .set_title(self.title)
+                       .set_description(self.description)
+                       .set_importance(self.is_important)
+                       .set_soft(self.is_soft)
+                       .build(self.user))
+
 
 class UpdateTaskCommand:
     def __init__(self, task, **kwargs):

@@ -1,6 +1,5 @@
 from .models import Task
 
-# Decorador base
 class TaskDecorator:
     def __init__(self, task):
         self.task = task

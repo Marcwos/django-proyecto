@@ -68,11 +68,17 @@ def create_task(request):
         try:
             form = TaskForm(request.POST)
             if form.is_valid():
+                # Obtén los valores de los checkboxes
+                is_important = request.POST.get('important') == 'True'
+                is_soft = request.POST.get('soft') == 'True'
+
                 command = CreateTaskCommand(
                     user=request.user,
                     title=form.cleaned_data['title'],
                     description=form.cleaned_data['description'],
-                    task_type=form.cleaned_data['task_type']  # Usa el valor del formulario
+                    task_type=form.cleaned_data['task_type'],  # Usa el valor del formulario
+                    is_important=is_important,
+                    is_soft=is_soft
                 )
                 command.execute()
                 return redirect('tasks')
@@ -82,6 +88,7 @@ def create_task(request):
                 'task_types': ['university', 'personal', 'work'],  # Incluye los nuevos tipos aquí
                 'error': 'Please provide valid data'
             })
+
 
 
 @login_required 

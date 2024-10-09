@@ -8,10 +8,20 @@
                 <h1>Create Task</h1>
 
                 {{ error }}
-    
+
                 {% csrf_token %}
 
                 {{ form.as_p }}
+
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="important" name="important" value="True">
+                    <label class="form-check-label" for="important">Importante</label>
+                </div>
+
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="soft" name="soft" value="True">
+                    <label class="form-check-label" for="soft">Suave</label>
+                </div>
 
                 <button class="btn btn-primary mt-3">
                     Save
