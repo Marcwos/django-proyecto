@@ -43,11 +43,11 @@ def tasks(request):
     decorated_tasks = []
     for task in tasks:
         if task.task_type == 'university':
-            decorated_tasks.append(UniversidadTaskDecorator(task))  # Ajusta según tu lógica
+            decorated_tasks.append(UniversidadTaskDecorator(task))  
         elif task.task_type == 'personal':
-            decorated_tasks.append(PersonalTaskDecorator(task))  # Ajusta según tu lógica
+            decorated_tasks.append(PersonalTaskDecorator(task))  
         elif task.task_type == 'work':
-            decorated_tasks.append(LaboralTaskDecorator(task))  # Ajusta según tu lógica
+            decorated_tasks.append(LaboralTaskDecorator(task))  
 
     return render(request, 'tasks.html', {'tasks': decorated_tasks})
 
@@ -68,7 +68,6 @@ def create_task(request):
         try:
             form = TaskForm(request.POST)
             if form.is_valid():
-                # Obtén los valores de los checkboxes
                 is_important = request.POST.get('important') == 'True'
                 is_soft = request.POST.get('soft') == 'True'
 
@@ -76,7 +75,7 @@ def create_task(request):
                     user=request.user,
                     title=form.cleaned_data['title'],
                     description=form.cleaned_data['description'],
-                    task_type=form.cleaned_data['task_type'],  # Usa el valor del formulario
+                    task_type=form.cleaned_data['task_type'], 
                     is_important=is_important,
                     is_soft=is_soft
                 )
@@ -85,7 +84,7 @@ def create_task(request):
         except ValueError:
             return render(request, "create_task.html", {
                 'form': TaskForm,
-                'task_types': ['university', 'personal', 'work'],  # Incluye los nuevos tipos aquí
+                'task_types': ['university', 'personal', 'work'],  
                 'error': 'Please provide valid data'
             })
 

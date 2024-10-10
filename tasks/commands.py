@@ -1,5 +1,3 @@
-## este las clases que implementas el diseno de patron de comportamiento COMAND
-from .models import Task
 from .task_builder import TaskBuilder
 
 class CreateTaskCommand:
@@ -15,22 +13,22 @@ class CreateTaskCommand:
         # Usa el Builder para construir la tarea
         builder = TaskBuilder()
         task = (builder.set_task_type(self.task_type)
-                       .set_title(self.title)
-                       .set_description(self.description)
-                       .set_importance(self.is_important)
-                       .set_soft(self.is_soft)
-                       .build(self.user))
+                        .set_title(self.title)
+                        .set_description(self.description)
+                        .set_importance(self.is_important)
+                        .set_soft(self.is_soft)
+                        .build(self.user))
 
 
 class UpdateTaskCommand:
     def __init__(self, task, **kwargs):
         self.task = task
-        self.kwargs = kwargs  # Aquí puedes pasar todos los campos que quieres actualizar
+        self.kwargs = kwargs  
 
     def execute(self):
         for key, value in self.kwargs.items():
             setattr(self.task, key, value)
-        self.task.save()  # Guardar los cambios en la base de datos
+        self.task.save()  
 
 
 class DeleteTaskCommand:
@@ -38,6 +36,5 @@ class DeleteTaskCommand:
         self.task = task
 
     def execute(self):
-        print(f"Deleting task: {self.task.title}")  # Agrega un print para depuración
-        self.task.delete()  # Elimina la tarea de la base de datos
-
+        print(f"Deleting task: {self.task.title}")  
+        self.task.delete()  
